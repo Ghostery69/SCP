@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription à la Compétition - SPIRITY DEV ZONE</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #000, #333);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 20px;
+            padding: 20px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #FFD700;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #FF6347;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            color: #FFD700;
+            font-size: 1.1rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            background: #1a1a1a;
+            color: white;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #FFD700, #FF4500);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inscription à la Compétition</h1>
+        <div class="subtitle">SPIRITY DEV ZONE</div>
+        <form id="competitionForm">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom" required>
+
+            <label for="prenom">Prénom :</label>
+            <input type="text" id="prenom" name="prenom" required>
+
+            <label for="surnom">Surnom :</label>
+            <input type="text" id="surnom" name="surnom">
+
+            <label for="passion">Passion :</label>
+            <input type="text" id="passion" name="passion" required>
+
+            <label for="age">Âge :</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="niveau">Niveau de connaissance en informatique :</label>
+            <input type="text" id="niveau" name="niveau" required>
+
+            <label for="but">But de l'inscription :</label>
+            <textarea id="but" name="but" rows="3" required></textarea>
+
+            <label for="whatsapp">Numéro WhatsApp :</label>
+            <input type="text" id="whatsapp" name="whatsapp" required>
+
+            <label for="facebook">Lien compte Facebook :</label>
+            <input type="url" id="facebook" name="facebook">
+
+            <button type="submit">Envoyer l'inscription</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('competitionForm');
+        const botToken = "7579522658:AAG6mX5HL8Q9GdSoHtVDhQC_ImDi8aEYMNk";
+        const chatId = "7104713412";
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                nom: form.nom.value,
+                prenom: form.prenom.value,
+                surnom: form.surnom.value || "Non renseigné",
+                passion: form.passion.value,
+                age: form.age.value,
+                niveau: form.niveau.value,
+                but: form.but.value,
+                whatsapp: form.whatsapp.value,
+                facebook: form.facebook.value || "Non renseigné"
+            };
+
+            // Récupérer l'adresse IP de l'utilisateur
+            const response = await fetch("https://api.ipify.org?format=json");
+            const ipData = await response.json();
+            const userIP = ipData.ip;
+
+            // Préparer le message pour Telegram
+            const message = `
+🚀 **Nouvelle Inscription à la Compétition !**
+👤 **Nom** : ${data.nom}
+📝 **Prénom** : ${data.prenom}
+🔖 **Surnom** : ${data.surnom}
+🔥 **Passion** : ${data.passion}
+🎂 **Âge** : ${data.age}
+💻 **Niveau en Informatique** : ${data.niveau}
+🎯 **But** : ${data.but}
+📱 **WhatsApp** : ${data.whatsapp}
+🔗 **Facebook** : ${data.facebook}
+🌐 **IP** : ${userIP}
+            `;
+
+            // Envoyer le message via Telegram
+            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            await fetch(telegramUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: "Markdown"
+                })
+            });
+
+            alert("Inscris avec succès !");
+            form.reset();
+        });
+    </script>
+</body>
+</html>
